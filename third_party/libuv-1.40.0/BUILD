@@ -1,5 +1,11 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 
+package(
+    default_visibility = ["//visibility:public"],
+    features = ["treat_warnings_as_errors"],
+    licenses = ["notice"],
+)
+
 uv_sources = [
     "src/fs-poll.c",
     "src/idna.c",
