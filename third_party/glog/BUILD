@@ -1,7 +1,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
-    name = "libuv",
+    name = "glog",
     visibility = ["//visibility:public"],
-    deps = ["//third_party/libuv-1.40.0:libuv"],
+    deps = ["@com_github_google_glog//:glog"],
 )
