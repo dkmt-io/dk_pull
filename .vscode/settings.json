@@ -3,5 +3,10 @@
   "C_Cpp.clang_format_sortIncludes": true,
   "editor.formatOnSave": true,
   "cmake.buildDirectory": "${workspaceFolder}/cmake-build",
-  "cmake.autoSelectActiveFolder": false,
+  "files.associations": {
+    "fstream": "cpp",
+    "*.inc": "cpp",
+    "atomic": "cpp",
+    "thread": "cpp"
+  },
 }

@@ -7,9 +7,15 @@ package(
 )
 
 cc_library(
-    name = "event_loop",
-    srcs = ["event_loop.cc"],
-    hdrs = ["event_loop.h"],
+    name = "event",
+    srcs = [
+        "event_loop.cc",
+        "timer.cc",
+    ],
+    hdrs = [
+        "event_loop.h",
+        "timer.h",
+    ],
     deps = [
         "//dk_pull/common",
         "//third_party/glog",

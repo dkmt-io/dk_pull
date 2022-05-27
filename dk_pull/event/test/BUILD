@@ -10,7 +10,17 @@ cc_test(
     name = "event_loop_test",
     srcs = ["event_loop_test.cc"],
     deps = [
-        "//dk_pull/event_loop",
+        "//dk_pull/event",
+        "//third_party/gtest",
+        "//third_party/gtest:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "timer_test",
+    srcs = ["timer_test.cc"],
+    deps = [
+        "//dk_pull/event",
         "//third_party/gtest",
         "//third_party/gtest:gtest_main",
     ],

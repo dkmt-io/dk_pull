@@ -14,32 +14,25 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/event_loop/event_loop.h"
+#include "dk_pull/event/event_loop.h"
 
-#include <glog/logging.h>
+#include <gtest/gtest.h>
 
 namespace dk_pull {
 namespace event_loop {
+namespace test {
 
-std::shared_ptr<EventLoop> EventLoop::Create() {
-  std::shared_ptr<EventLoop> result(new EventLoop());
-  return result;
+TEST(EventLoopTest, BasicTest) {
+  using dk_pull::event::EventLoop;
+  EventLoop loop;
+  loop.Run();
 }
 
-EventLoop::EventLoop() : uvLoop() {
-  int rc = uv_loop_init(&uvLoop);
-  CHECK_EQ(0, rc);
+TEST(EventLoopTest, DefaultLoopTest) {
+  using dk_pull::event::EventLoop;
+  EventLoop::Default().Run();
 }
 
-EventLoop::~EventLoop() {
-  int rc = uv_loop_close(&uvLoop);
-  CHECK_EQ(0, rc);
-}
-
-void EventLoop::Run() {
-  int rc = uv_run(&uvLoop, UV_RUN_DEFAULT);
-  CHECK_EQ(0, rc);
-}
-
+}  // namespace test
 }  // namespace event_loop
 }  // namespace dk_pull
