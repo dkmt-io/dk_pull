@@ -18,23 +18,26 @@
 
 #include <uv.h>
 
+#include <cstdint>
 #include <memory>
 
 #include "dk_pull/common/uncopyable.h"
+#include "dk_pull/event/timer.h"
 
 namespace dk_pull {
-namespace event_loop {
+namespace event {
 
 class EventLoop final {
  public:
-  static std::shared_ptr<EventLoop> Create();
+  EventLoop();
 
   void Run();
 
+  std::shared_ptr<Timer> CreateTimer(const Timer::Options& options);
+
   ~EventLoop();
 
- protected:
-  EventLoop();
+  static EventLoop& Default();
 
  private:
   uv_loop_t uvLoop;
@@ -42,5 +45,5 @@ class EventLoop final {
   DK_DECLARE_UNCOPYABLE(EventLoop);
 };
 
-}  // namespace event_loop
+}  // namespace event
 }  // namespace dk_pull

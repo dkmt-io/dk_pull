@@ -3,16 +3,22 @@ Checks: '
 
 readability-*,
 -readability-identifier-length,
+-readability-magic-numbers,
 
 clang-analyzer-*,
 
 cert-*,
+-cert-err58-cpp,
 
 bugprone-*,
 -bugprone-macro-parentheses,
 
 cppcoreguidelines-*,
+-cppcoreguidelines-avoid-magic-numbers,
+-cppcoreguidelines-avoid-non-const-global-variables,
 -cppcoreguidelines-macro-usage,
+-cppcoreguidelines-owning-memory,
+-cppcoreguidelines-pro-type-union-access,
 
 concurrency-*,
 
@@ -21,11 +27,11 @@ performance-*,
 hicpp-*,
 '
 
-WarningsAsErrors:     '*'
+WarningsAsErrors: '*'
 
-HeaderFilterRegex:    'dk_pull'
+HeaderFilterRegex: 'dk_pull'
 
-FormatStyle:          file
+FormatStyle: file
 
 CheckOptions:
   - { key: readability-identifier-naming.NamespaceCase,           value: lower_case }
@@ -37,7 +43,7 @@ CheckOptions:
   - { key: readability-identifier-naming.PublicMethodCase,        value: CamelCase }
   - { key: readability-identifier-naming.ProtectedMethodCase,     value: camelBack }
   - { key: readability-identifier-naming.PrivateMethodCase,       value: camelBack }
-  - { key: readability-identifier-naming.PublicMemberCase,        value: CamelCase }
+  - { key: readability-identifier-naming.PublicMemberCase,        value: lower_case }
   - { key: readability-identifier-naming.ProtectedMemberCase,     value: camelBack }
   - { key: readability-identifier-naming.PrivateMemberCase,       value: camelBack }
   - { key: readability-identifier-naming.ConstexprVariableCase,   value: UPPER_CASE }

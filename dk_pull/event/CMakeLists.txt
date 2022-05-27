@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.10)
 
-add_library(dk_pull_event_loop
+add_library(dk_pull_event
   event_loop.cc
   event_loop.h
+  timer.cc
+  timer.h
 )
-set_target_properties(dk_pull_event_loop PROPERTIES CXX_CLANG_TIDY "clang-tidy")
-target_link_libraries(dk_pull_event_loop
+target_link_libraries(dk_pull_event
   glog
   gflags_nothreads
   uv_a
@@ -16,13 +17,25 @@ target_link_libraries(dk_pull_event_loop
 add_executable(event_loop_test
   test/event_loop_test.cc
 )
-set_target_properties(event_loop_test PROPERTIES CXX_CLANG_TIDY "clang-tidy")
 target_link_libraries(event_loop_test
-  dk_pull_event_loop
+  dk_pull_event
   gtest
   gtest_main
 )
 add_test(
   NAME event_loop_test
   COMMAND event_loop_test
+)
+
+add_executable(timer_test
+  test/timer_test.cc
+)
+target_link_libraries(timer_test
+  dk_pull_event
+  gtest
+  gtest_main
+)
+add_test(
+  NAME timer_test
+  COMMAND timer_test
 )
