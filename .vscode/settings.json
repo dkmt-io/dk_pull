@@ -2,4 +2,6 @@
   "C_Cpp.clang_format_style": "file",
   "C_Cpp.clang_format_sortIncludes": true,
   "editor.formatOnSave": true,
+  "cmake.buildDirectory": "${workspaceFolder}/cmake-build",
+  "cmake.autoSelectActiveFolder": false,
 }

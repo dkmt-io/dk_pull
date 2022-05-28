@@ -1,0 +1,50 @@
+Checks: '
+-*,
+
+readability-*,
+-readability-identifier-length,
+
+clang-analyzer-*,
+
+cert-*,
+
+bugprone-*,
+-bugprone-macro-parentheses,
+
+cppcoreguidelines-*,
+-cppcoreguidelines-macro-usage,
+
+concurrency-*,
+
+performance-*,
+
+hicpp-*,
+'
+
+WarningsAsErrors:     '*'
+
+HeaderFilterRegex:    'dk_pull'
+
+FormatStyle:          file
+
+CheckOptions:
+  - { key: readability-identifier-naming.NamespaceCase,           value: lower_case }
+  - { key: readability-identifier-naming.ClassCase,               value: CamelCase }
+  - { key: readability-identifier-naming.EnumCase,                value: CamelCase }
+  - { key: readability-identifier-naming.StructCase,              value: CamelCase }
+  - { key: readability-identifier-naming.UnionCase,               value: CamelCase }
+  - { key: readability-identifier-naming.FunctionCase,            value: CamelCase }
+  - { key: readability-identifier-naming.PublicMethodCase,        value: CamelCase }
+  - { key: readability-identifier-naming.ProtectedMethodCase,     value: camelBack }
+  - { key: readability-identifier-naming.PrivateMethodCase,       value: camelBack }
+  - { key: readability-identifier-naming.PublicMemberCase,        value: CamelCase }
+  - { key: readability-identifier-naming.ProtectedMemberCase,     value: camelBack }
+  - { key: readability-identifier-naming.PrivateMemberCase,       value: camelBack }
+  - { key: readability-identifier-naming.ConstexprVariableCase,   value: UPPER_CASE }
+  - { key: readability-identifier-naming.EnumConstantCase,        value: UPPER_CASE }
+  - { key: readability-identifier-naming.GlobalConstantCase,      value: UPPER_CASE }
+  - { key: readability-identifier-naming.TemplateParameterCase,   value: CamelCase }
+  - { key: readability-function-size.LineThreshold,               value: 80 }
+  - { key: readability-function-size.StatementThreshold,          value: 200 }
+  - { key: readability-function-size.BranchThreshold,             value: 10 }
+  - { key: readability-function-size.ParameterThreshold,          value: 3 }

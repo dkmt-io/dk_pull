@@ -1,6 +1,14 @@
 # Bazel related folders
 /bazel-*
 
+# cmake related folders
+/cmake-build-debug
+/cmake-build-release
+/cmake-build
+
+# CLion related folders
+/.idea
+
 # Prerequisites
 *.d
 
