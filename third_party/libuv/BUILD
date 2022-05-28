@@ -9,5 +9,5 @@ package(
 cc_library(
     name = "libuv",
     visibility = ["//visibility:public"],
-    deps = ["//third_party/libuv-1.40.0:libuv"],
+    deps = ["@libuv-1.40.0//:libuv"],
 )

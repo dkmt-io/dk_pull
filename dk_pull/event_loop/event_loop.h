@@ -36,9 +36,9 @@ class EventLoop final {
  protected:
   EventLoop();
 
+ private:
   uv_loop_t uvLoop;
 
- private:
   DK_DECLARE_UNCOPYABLE(EventLoop);
 };
 

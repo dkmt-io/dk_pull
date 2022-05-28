@@ -21,12 +21,23 @@
 namespace dk_pull {
 namespace event_loop {
 
+class DummyClass {
+ public:
+  void Test() {}
+
+ protected:
+  void testA() {}
+
+ private:
+  int a;
+};
+
 std::shared_ptr<EventLoop> EventLoop::Create() {
   std::shared_ptr<EventLoop> result(new EventLoop());
   return result;
 }
 
-EventLoop::EventLoop() {
+EventLoop::EventLoop() : uvLoop() {
   int rc = uv_loop_init(&uvLoop);
   CHECK_EQ(0, rc);
 }

@@ -38,6 +38,17 @@ git_repository(
     tag = "release-1.11.0",
 )
 
+git_repository(
+    name = "bazel_clang_tidy",
+    commit = "69aa13e6d7cf102df70921c66be15d4592251e56",
+    remote = "https://github.com/erenon/bazel_clang_tidy.git",
+)
+
+local_repository(
+    name = "libuv-1.40.0",
+    path = "third_party/libuv-1.40.0",
+)
+
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
