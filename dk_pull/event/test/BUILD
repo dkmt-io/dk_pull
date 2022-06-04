@@ -17,6 +17,16 @@ cc_test(
 )
 
 cc_test(
+    name = "set_immediate_test",
+    srcs = ["set_immediate_test.cc"],
+    deps = [
+        "//dk_pull/event",
+        "//third_party/gtest",
+        "//third_party/gtest:gtest_main",
+    ],
+)
+
+cc_test(
     name = "timer_test",
     srcs = ["timer_test.cc"],
     deps = [

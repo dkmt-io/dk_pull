@@ -23,6 +23,8 @@
 #include <thread>
 
 #include "dk_pull/event/event_loop.h"
+#include "dk_pull/event/set_interval.h"
+#include "dk_pull/event/set_timeout.h"
 
 namespace dk_pull {
 namespace event {
@@ -49,26 +51,26 @@ TEST(TimerTest, SetInterval) {
   EXPECT_EQ(10, count);
 }
 
-void TestOneTimeTimer(EventLoop& loop) {
+void TestOneTimeTimer(EventLoop* loop) {
   std::atomic<int> count(0);
-  loop.CreateTimer({
+  loop->CreateTimer({
       .callback = [&count]() { count++; },
       .delay = 100,
       .type = Timer::Type::ONE_TIME,
   });
-  auto timer = loop.CreateTimer({
+  auto timer = loop->CreateTimer({
       .callback = [&count]() { count++; },
       .delay = 100,
       .type = Timer::Type::ONE_TIME,
   });
-  loop.Run();
+  loop->Run();
   EXPECT_EQ(2, count);
 }
 
-void TestRepeatedTimer(EventLoop& loop) {
+void TestRepeatedTimer(EventLoop* loop) {
   std::atomic<int> count(0);
   std::shared_ptr<Timer> timer;
-  timer = loop.CreateTimer({
+  timer = loop->CreateTimer({
       .callback =
           [&count, &timer]() {
             count++;
@@ -79,20 +81,20 @@ void TestRepeatedTimer(EventLoop& loop) {
       .delay = 10,
       .type = Timer::Type::REPEATED,
   });
-  loop.Run();
+  loop->Run();
   EXPECT_EQ(10, count);
 }
 
 TEST(TimerTest, MultiThreadedTest) {
   std::thread t1([]() {
     EventLoop loop;
-    TestOneTimeTimer(loop);
-    TestRepeatedTimer(loop);
+    TestOneTimeTimer(&loop);
+    TestRepeatedTimer(&loop);
   });
   std::thread t2([]() {
     EventLoop loop;
-    TestRepeatedTimer(loop);
-    TestOneTimeTimer(loop);
+    TestRepeatedTimer(&loop);
+    TestOneTimeTimer(&loop);
   });
   t1.join();
   t2.join();
