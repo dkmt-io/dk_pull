@@ -14,54 +14,25 @@
  * limitations under the License.
  ******************************************************************************/
 
-#pragma once
+#include "dk_pull/event/set_interval.h"
 
-#include <uv.h>
-
-#include <atomic>
 #include <cstdint>
-#include <functional>
-#include <list>
 #include <memory>
-#include <mutex>
 
-#include "dk_pull/common/uncopyable.h"
-#include "dk_pull/event/timer.h"
+#include "dk_pull/event/event_loop.h"
 
 namespace dk_pull {
 namespace event {
 
-class EventLoop final {
- public:
-  using Task = std::function<void()>;
-
-  EventLoop();
-
-  void Run();
-
-  std::shared_ptr<Timer> CreateTimer(const Timer::Options& options);
-
-  void SubmitTask(const Task& task);
-
-  ~EventLoop();
-
-  static EventLoop& Default();
-
- private:
-  static void uvAsyncCloseCallback(uv_handle_t* /*uvHandle*/);
-
-  void processTasks();
-
-  bool hasTask();
-
-  uv_loop_t uvLoop;
-  uv_any_handle uvAsync;
-  std::atomic<bool> uvAsyncClosed;
-  std::list<Task> taskQueue;
-  std::mutex taskQueueMutex;
-
-  DK_DECLARE_UNCOPYABLE(EventLoop);
-};
+std::shared_ptr<Timer> SetInterval(uint64_t ms, const Timer::Callback& cb) {
+  using dk_pull::event::EventLoop;
+  auto timer = EventLoop::Default().CreateTimer({
+      .callback = cb,
+      .delay = ms,
+      .type = Timer::Type::REPEATED,
+  });
+  return timer;
+}
 
 }  // namespace event
 }  // namespace dk_pull

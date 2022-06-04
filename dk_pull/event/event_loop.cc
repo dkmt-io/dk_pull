@@ -24,39 +24,69 @@
 namespace dk_pull {
 namespace event {
 
-EventLoop::EventLoop() : uvLoop() {
+EventLoop::EventLoop() : uvLoop(), uvAsync(), uvAsyncClosed(false) {
   int rc = uv_loop_init(&uvLoop);
   CHECK_EQ(rc, 0) << "uv_loop_init() failed: " << uv_strerror(rc);
+  rc = uv_async_init(&uvLoop, &uvAsync.async, nullptr);
+  CHECK_EQ(rc, 0) << "uv_async_init() failed: " << uv_strerror(rc);
+  uvAsync.async.data = this;
+  uv_unref(&uvAsync.handle);
+}
+
+void EventLoop::uvAsyncCloseCallback(uv_handle_t* uvHandle) {
+  CHECK_NOTNULL(uvHandle);
+  auto* eventLoop = static_cast<EventLoop*>(uvHandle->data);
+  eventLoop->uvAsyncClosed = true;
 }
 
 EventLoop::~EventLoop() {
+  uv_close(&uvAsync.handle, uvAsyncCloseCallback);
+  while (!uvAsyncClosed) {
+    int rc = uv_run(&uvLoop, UV_RUN_ONCE);
+    CHECK_EQ(rc, 0) << "uv_run() failed: " << uv_strerror(rc);
+  }
   int rc = uv_loop_close(&uvLoop);
   CHECK_EQ(rc, 0) << "uv_loop_close() failed: " << uv_strerror(rc);
 }
 
+bool EventLoop::hasTask() {
+  std::lock_guard<std::mutex> guard(taskQueueMutex);
+  return !taskQueue.empty();
+}
+
+void EventLoop::processTasks() {
+  std::list<Task> tasks;
+  {
+    std::lock_guard<std::mutex> guard(taskQueueMutex);
+    taskQueue.swap(tasks);
+  }
+  for (const auto& task : tasks) {
+    task();
+  }
+}
+
 void EventLoop::Run() {
-  int rc = uv_run(&uvLoop, UV_RUN_DEFAULT);
-  CHECK_EQ(rc, 0) << "uv_run() failed: " << uv_strerror(rc);
+  while (uv_loop_alive(&uvLoop) != 0 || hasTask()) {
+    uv_ref(&uvAsync.handle);
+    uv_run(&uvLoop, UV_RUN_ONCE);
+    uv_unref(&uvAsync.handle);
+    processTasks();
+  }
 }
 
 EventLoop& EventLoop::Default() {
   static std::atomic<bool> initialized(false);
   static std::mutex mutex;
   static std::shared_ptr<EventLoop> defaultLoop;
-  static std::thread::id defaultThreadID;
-  std::thread::id threadID = std::this_thread::get_id();
   if (initialized) {
-    CHECK(defaultThreadID == threadID);
     CHECK(defaultLoop != nullptr);
     return *defaultLoop;
   }
   std::lock_guard<std::mutex> lock(mutex);
   if (initialized) {
-    CHECK(defaultThreadID == threadID);
     CHECK(defaultLoop != nullptr);
     return *defaultLoop;
   }
-  defaultThreadID = threadID;
   defaultLoop = std::make_shared<EventLoop>();
   initialized = true;
   return *defaultLoop;
@@ -65,6 +95,14 @@ EventLoop& EventLoop::Default() {
 std::shared_ptr<Timer> EventLoop::CreateTimer(const Timer::Options& options) {
   auto timer = Timer::Create(options, &uvLoop);
   return timer;
+}
+
+void EventLoop::SubmitTask(const Task& task) {
+  {
+    std::lock_guard<std::mutex> guard(taskQueueMutex);
+    taskQueue.push_back(task);
+  }
+  uv_async_send(&uvAsync.async);
 }
 
 }  // namespace event

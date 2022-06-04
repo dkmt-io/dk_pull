@@ -82,9 +82,5 @@ class Timer final : public std::enable_shared_from_this<Timer> {
   DK_DECLARE_UNCOPYABLE(Timer);
 };
 
-std::shared_ptr<Timer> SetTimeout(uint64_t ms, const Timer::Callback& cb);
-
-std::shared_ptr<Timer> SetInterval(uint64_t ms, const Timer::Callback& cb);
-
 }  // namespace event
 }  // namespace dk_pull

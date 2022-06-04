@@ -19,7 +19,7 @@
 #include <gtest/gtest.h>
 
 namespace dk_pull {
-namespace event_loop {
+namespace event {
 namespace test {
 
 TEST(EventLoopTest, BasicTest) {
@@ -34,5 +34,5 @@ TEST(EventLoopTest, DefaultLoopTest) {
 }
 
 }  // namespace test
-}  // namespace event_loop
+}  // namespace event
 }  // namespace dk_pull

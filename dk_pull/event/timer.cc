@@ -97,24 +97,5 @@ void Timer::uvTimerCallback(uv_timer_t* uvTimer) {
   }
 }
 
-std::shared_ptr<Timer> SetTimeout(uint64_t ms, const Timer::Callback& cb) {
-  using dk_pull::event::EventLoop;
-  auto timer = EventLoop::Default().CreateTimer({
-      .callback = cb,
-      .delay = ms,
-      .type = Timer::Type::ONE_TIME,
-  });
-  return timer;
-}
-
-std::shared_ptr<Timer> SetInterval(uint64_t ms, const Timer::Callback& cb) {
-  using dk_pull::event::EventLoop;
-  auto timer = EventLoop::Default().CreateTimer({
-      .callback = cb,
-      .delay = ms,
-      .type = Timer::Type::REPEATED,
-  });
-  return timer;
-}
 }  // namespace event
 }  // namespace dk_pull

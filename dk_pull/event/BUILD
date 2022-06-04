@@ -10,10 +10,16 @@ cc_library(
     name = "event",
     srcs = [
         "event_loop.cc",
+        "set_immediate.cc",
+        "set_interval.cc",
+        "set_timeout.cc",
         "timer.cc",
     ],
     hdrs = [
         "event_loop.h",
+        "set_immediate.h",
+        "set_interval.h",
+        "set_timeout.h",
         "timer.h",
     ],
     deps = [
