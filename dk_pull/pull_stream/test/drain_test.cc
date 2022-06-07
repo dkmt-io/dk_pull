@@ -14,20 +14,32 @@
  * limitations under the License.
  ******************************************************************************/
 
-#pragma once
+#include "dk_pull/pull_stream/sinks/drain.h"
 
-#include <functional>
+#include <gtest/gtest.h>
 
-#include "dk_pull/types/end_or_error.h"
+#include <utility>
+#include <vector>
 
-namespace dk_pull {
-namespace types {  //
+#include "dk_pull/pull_stream/sources/values.h"
 
-template <typename T>
-using SourceCallback = std::function<void(const Done&, T&&)>;
-
-template <typename T>
-using Source = std::function<void(const Abort&, const SourceCallback<T>&)>;
-
-}  // namespace types
-}  // namespace dk_pull
+TEST(DrainTest, BasicTest) {
+  using dk_pull::pull_stream::sinks::Drain;
+  using dk_pull::pull_stream::sources::Values;
+  using dk_pull::types::Done;
+  auto source = Values<int>::Create({1, 2, 3});
+  int counter = 0;
+  Drain<int>::OnDone onDone = [&counter](const Done& done) {
+    EXPECT_EQ(3, counter);
+    EXPECT_TRUE(done);
+    EXPECT_FALSE(done.IsError());
+    counter++;
+  };
+  Drain<int>::OnValue onValue = [&counter](int&& v) {
+    counter++;
+    EXPECT_EQ(counter, v);
+  };
+  auto sink = Drain<int>::Create(onValue, onDone);
+  sink(source);
+  EXPECT_EQ(4, counter);
+}

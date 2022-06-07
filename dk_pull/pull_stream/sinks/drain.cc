@@ -14,20 +14,4 @@
  * limitations under the License.
  ******************************************************************************/
 
-#pragma once
-
-#include <functional>
-
-#include "dk_pull/types/end_or_error.h"
-
-namespace dk_pull {
-namespace types {  //
-
-template <typename T>
-using SourceCallback = std::function<void(const Done&, T&&)>;
-
-template <typename T>
-using Source = std::function<void(const Abort&, const SourceCallback<T>&)>;
-
-}  // namespace types
-}  // namespace dk_pull
+#include "dk_pull/pull_stream/sinks/drain.h"

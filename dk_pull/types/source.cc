@@ -15,9 +15,3 @@
  ******************************************************************************/
 
 #include "dk_pull/types/source.h"
-
-namespace dk_pull {
-namespace types {  //
-
-}  // namespace types
-}  // namespace dk_pull

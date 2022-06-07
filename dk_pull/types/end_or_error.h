@@ -23,15 +23,21 @@ namespace types {
 
 class EndOrError final {
  public:
+  const static EndOrError TRUE;
+
+  const static EndOrError FALSE;
+
   explicit EndOrError(bool end = false);
 
   explicit EndOrError(const std::string& message);
 
-  inline bool IsEnd() const;
+  bool IsEnd() const;
 
-  inline bool IsError() const;
+  bool IsError() const;
 
-  inline const std::string& GetErrorMessage() const;
+  explicit operator bool() const;
+
+  const std::string& GetErrorMessage() const;
 
  private:
   bool isEnd = false;
