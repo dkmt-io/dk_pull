@@ -30,7 +30,13 @@ bool EndOrError::IsEnd() const { return isEnd; }
 
 bool EndOrError::IsError() const { return isError; }
 
+EndOrError::operator bool() const { return isEnd || isError; }
+
 const std::string& EndOrError::GetErrorMessage() const { return errorMessage; }
+
+const EndOrError EndOrError::TRUE(true);
+
+const EndOrError EndOrError::FALSE(false);
 
 }  // namespace types
 }  // namespace dk_pull

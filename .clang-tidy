@@ -2,6 +2,7 @@ Checks: '
 -*,
 
 readability-*,
+-readability-function-size,
 -readability-identifier-length,
 -readability-magic-numbers,
 
@@ -50,7 +51,3 @@ CheckOptions:
   - { key: readability-identifier-naming.EnumConstantCase,        value: UPPER_CASE }
   - { key: readability-identifier-naming.GlobalConstantCase,      value: UPPER_CASE }
   - { key: readability-identifier-naming.TemplateParameterCase,   value: CamelCase }
-  - { key: readability-function-size.LineThreshold,               value: 80 }
-  - { key: readability-function-size.StatementThreshold,          value: 200 }
-  - { key: readability-function-size.BranchThreshold,             value: 10 }
-  - { key: readability-function-size.ParameterThreshold,          value: 3 }
