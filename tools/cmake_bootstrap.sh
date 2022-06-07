@@ -11,4 +11,4 @@ cmake                                                      \
   -B cmake-build                                           \
   -S .
 
-cmake --build cmake-build
+cmake --build cmake-build -j$(nproc)
