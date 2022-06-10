@@ -65,6 +65,20 @@
     "stop_token": "cpp",
     "streambuf": "cpp",
     "cinttypes": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "any": "cpp",
+    "bitset": "cpp",
+    "csetjmp": "cpp",
+    "csignal": "cpp",
+    "forward_list": "cpp",
+    "unordered_set": "cpp",
+    "optional": "cpp",
+    "regex": "cpp",
+    "hash_map": "cpp",
+    "hash_set": "cpp",
+    "slist": "cpp",
+    "ranges": "cpp",
+    "shared_mutex": "cpp",
+    "variant": "cpp"
   },
 }

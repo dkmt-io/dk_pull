@@ -20,7 +20,7 @@
 #include "dk_pull/types/source.h"
 
 namespace dk_pull {
-namespace types {  //
+namespace types {
 
 template <typename T>
 class DuplexSource {
