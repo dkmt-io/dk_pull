@@ -23,9 +23,9 @@ namespace types {
 
 class EndOrError final {
  public:
-  const static EndOrError TRUE;
+  static const EndOrError TRUE;
 
-  const static EndOrError FALSE;
+  static const EndOrError FALSE;
 
   explicit EndOrError(bool end = false);
 
