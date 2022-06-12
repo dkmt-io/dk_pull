@@ -1,4 +1,4 @@
-build --cxxopt=-std=c++14
+build --cxxopt=-std=c++17
 build --conlyopt=-std=gnu11
 build --disk_cache=~/.bazel_disk_cache
 build --spawn_strategy=sandboxed
