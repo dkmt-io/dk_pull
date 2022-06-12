@@ -13,6 +13,7 @@ RUN apt-get -y install python-is-python3
 RUN apt-get -y install python-dev-is-python3
 RUN apt-get -y install python3-pip
 RUN apt-get -y install git
+RUN apt-get -y install ninja-build
 RUN apt-get -y upgrade
 RUN go get github.com/bazelbuild/bazelisk
 RUN ln -s /root/go/bin/bazelisk /usr/local/bin/bazel

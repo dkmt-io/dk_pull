@@ -17,8 +17,8 @@ conan install .                          \
   --build                                \
   --settings compiler.libcxx=$LIBCXX
 
-cmake                                                      \
-  -B cmake-build                                           \
-  -S .
+cmake -G Ninja -B cmake-build -S .
 
 cmake --build cmake-build -j$(nproc)
+
+cmake --build cmake-build --target test
