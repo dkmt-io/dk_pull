@@ -2,6 +2,7 @@ Checks: '
 -*,
 
 readability-*,
+-readability-function-cognitive-complexity,
 -readability-function-size,
 -readability-identifier-length,
 -readability-magic-numbers,
@@ -15,7 +16,6 @@ bugprone-*,
 -bugprone-macro-parentheses,
 
 cppcoreguidelines-*,
--cppcoreguidelines-avoid-magic-numbers,
 -cppcoreguidelines-avoid-non-const-global-variables,
 -cppcoreguidelines-macro-usage,
 -cppcoreguidelines-owning-memory,
@@ -24,8 +24,6 @@ cppcoreguidelines-*,
 concurrency-*,
 
 performance-*,
-
-hicpp-*,
 '
 
 WarningsAsErrors: '*'

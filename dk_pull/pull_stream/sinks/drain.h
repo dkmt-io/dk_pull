@@ -29,13 +29,19 @@ namespace pull_stream {
 namespace sinks {
 
 template <typename T>
-class Drain final : public std::enable_shared_from_this<Drain<T>> {
+class Drain final : public dk_pull::types::SinkContext<T>,
+                    public std::enable_shared_from_this<Drain<T>> {
  public:
   using OnDone = std::function<void(const dk_pull::types::Done&)>;
   using OnValue = std::function<void(T&&)>;
 
-  static dk_pull::types::Sink<T> Create(const OnValue& fn, const OnDone& done) {
+  static std::shared_ptr<Drain> Create(const OnValue& fn, const OnDone& done) {
     auto self = std::shared_ptr<Drain>(new Drain(fn, done));
+    return self;
+  }
+
+  dk_pull::types::Sink<T> Sink() override {
+    auto self = this->shared_from_this();
     return [self](const dk_pull::types::Source<T>& source) {
       using dk_pull::looper::Looper;
       using dk_pull::types::Abort;
@@ -57,11 +63,16 @@ class Drain final : public std::enable_shared_from_this<Drain<T>> {
 
  private:
   Drain(const OnValue& fn, const OnDone& done) : onValue(fn), onDone(done) {
-    CHECK(onValue != nullptr);
-    CHECK(onDone != nullptr);
+    if (onValue == nullptr) {
+      onValue = [](auto /*unused*/) {};
+    }
+    if (onDone == nullptr) {
+      onDone = [](auto /*unused*/) {};
+    }
   }
 
   OnValue onValue;
+
   OnDone onDone;
 
   DK_DECLARE_UNCOPYABLE(Drain);

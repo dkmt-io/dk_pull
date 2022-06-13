@@ -22,38 +22,16 @@
 namespace dk_pull {
 namespace types {
 
-template <typename T>
-class DuplexSource {
- public:
-  DuplexSource(const DuplexSource&) noexcept = default;
-  DuplexSource(DuplexSource&&) noexcept = default;
-  DuplexSource& operator=(const DuplexSource&) noexcept = default;
-  DuplexSource& operator=(DuplexSource&&) noexcept = default;
-  virtual ~DuplexSource() = default;
-
-  virtual dk_pull::types::Source<T> Source() = 0;
-};
-
-template <typename T>
-class DuplexSink {
- public:
-  DuplexSink(const DuplexSink&) noexcept = default;
-  DuplexSink(DuplexSink&&) noexcept = default;
-  DuplexSink& operator=(const DuplexSink&) noexcept = default;
-  DuplexSink& operator=(DuplexSink&&) noexcept = default;
-  virtual ~DuplexSink() = default;
-
-  virtual dk_pull::types::Sink<T> Sink() = 0;
-};
-
 template <typename SourceType, typename SinkType>
-class Duplex : public DuplexSource<SourceType>, public DuplexSink<SinkType> {
+class Duplex : public SourceContext<SourceType>, public SinkContext<SinkType> {
  public:
-  Duplex(const Duplex&) noexcept = default;
-  Duplex(Duplex&&) noexcept = default;
-  Duplex& operator=(const Duplex&) noexcept = default;
-  Duplex& operator=(Duplex&&) noexcept = default;
   virtual ~Duplex() = default;
+
+ protected:
+  Duplex() = default;
+
+ private:
+  DK_DECLARE_UNCOPYABLE(Duplex);
 };
 
 template <typename SourceType, typename SinkType>

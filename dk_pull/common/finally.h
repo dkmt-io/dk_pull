@@ -16,27 +16,24 @@
 
 #pragma once
 
-#include "dk_pull/types/source.h"
+#include <functional>
+
+#include "dk_pull/common/uncopyable.h"
 
 namespace dk_pull {
-namespace types {  //
+namespace common {
 
-template <typename In, typename Out>
-using Through = std::function<Source<Out>(const Source<In>&)>;
-
-template <typename In, typename Out>
-class ThroughContext {
+class Finally final {
  public:
-  virtual dk_pull::types::Through<In, Out> Through() = 0;
+  explicit Finally(const std::function<void()>& fn);
 
-  virtual ~ThroughContext() = default;
-
- protected:
-  ThroughContext() = default;
+  ~Finally();
 
  private:
-  DK_DECLARE_UNCOPYABLE(ThroughContext);
+  std::function<void()> action;
+
+  DK_DECLARE_UNCOPYABLE(Finally);
 };
 
-}  // namespace types
+}  // namespace common
 }  // namespace dk_pull

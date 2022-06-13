@@ -9,9 +9,11 @@ package(
 cc_library(
     name = "sources",
     srcs = [
+        "count.cc",
         "values.cc",
     ],
     hdrs = [
+        "count.h",
         "values.h",
     ],
     deps = [

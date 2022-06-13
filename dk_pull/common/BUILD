@@ -8,7 +8,15 @@ package(
 
 cc_library(
     name = "common",
-    srcs = ["uncopyable.cc"],
-    hdrs = ["uncopyable.h"],
-    deps = [],
+    srcs = [
+        "finally.cc",
+        "uncopyable.cc",
+    ],
+    hdrs = [
+        "finally.h",
+        "uncopyable.h",
+    ],
+    deps = [
+        "//third_party/glog",
+    ],
 )
