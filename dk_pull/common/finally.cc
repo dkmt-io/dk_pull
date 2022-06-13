@@ -14,29 +14,27 @@
  * limitations under the License.
  ******************************************************************************/
 
-#pragma once
+#include "dk_pull/common/finally.h"
 
-#include "dk_pull/types/source.h"
+#include "glog/logging.h"
 
 namespace dk_pull {
-namespace types {  //
+namespace common {
 
-template <typename In, typename Out>
-using Through = std::function<Source<Out>(const Source<In>&)>;
+Finally::Finally(const std::function<void()>& fn) : action(fn) {}
 
-template <typename In, typename Out>
-class ThroughContext {
- public:
-  virtual dk_pull::types::Through<In, Out> Through() = 0;
+Finally::~Finally() {
+  if (action == nullptr) {
+    return;
+  }
+  try {
+    action();
+  } catch (const std::exception& e) {
+    LOG(FATAL) << "Finally: " << e.what();
+  } catch (...) {
+    LOG(FATAL) << "Finally: unknown exception";
+  }
+}
 
-  virtual ~ThroughContext() = default;
-
- protected:
-  ThroughContext() = default;
-
- private:
-  DK_DECLARE_UNCOPYABLE(ThroughContext);
-};
-
-}  // namespace types
+}  // namespace common
 }  // namespace dk_pull

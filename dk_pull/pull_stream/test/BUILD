@@ -10,12 +10,12 @@ cc_test(
     name = "pull_stream_test",
     srcs = [
         "drain_test.cc",
+        "protocol_checker_test.cc",
         "values_test.cc",
     ],
     deps = [
         "//dk_pull/event",
-        "//dk_pull/pull_stream/sinks",
-        "//dk_pull/pull_stream/sources",
+        "//dk_pull/pull_stream",
         "//third_party/gtest",
         "//third_party/gtest:gtest_main",
     ],

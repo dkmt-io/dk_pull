@@ -24,5 +24,19 @@ namespace types {  //
 template <typename T>
 using Sink = std::function<void(const Source<T>&)>;
 
+template <typename T>
+class SinkContext {
+ public:
+  virtual dk_pull::types::Sink<T> Sink() = 0;
+
+  virtual ~SinkContext() = default;
+
+ protected:
+  SinkContext() = default;
+
+ private:
+  DK_DECLARE_UNCOPYABLE(SinkContext);
+};
+
 }  // namespace types
 }  // namespace dk_pull

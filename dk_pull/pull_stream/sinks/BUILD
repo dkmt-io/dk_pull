@@ -9,9 +9,11 @@ package(
 cc_library(
     name = "sinks",
     srcs = [
+        "abort_now_sink.cc",
         "drain.cc",
     ],
     hdrs = [
+        "abort_now_sink.h",
         "drain.h",
     ],
     deps = [

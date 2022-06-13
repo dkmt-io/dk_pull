@@ -21,13 +21,15 @@
 #include <utility>
 #include <vector>
 
+#include "dk_pull/pull_stream/pull.h"
 #include "dk_pull/pull_stream/sources/values.h"
 
 TEST(DrainTest, BasicTest) {
+  using dk_pull::pull_stream::Pull;
   using dk_pull::pull_stream::sinks::Drain;
   using dk_pull::pull_stream::sources::Values;
   using dk_pull::types::Done;
-  auto source = Values<int>::Create({1, 2, 3});
+  auto values = Values<int>::Create({1, 2, 3});
   int counter = 0;
   Drain<int>::OnDone onDone = [&counter](const Done& done) {
     EXPECT_EQ(3, counter);
@@ -39,7 +41,9 @@ TEST(DrainTest, BasicTest) {
     counter++;
     EXPECT_EQ(counter, v);
   };
-  auto sink = Drain<int>::Create(onValue, onDone);
-  sink(source);
+  auto drain = Drain<int>::Create(onValue, onDone);
+  auto source = values->Source();
+  auto sink = drain->Sink();
+  Pull(source, sink);
   EXPECT_EQ(4, counter);
 }

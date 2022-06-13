@@ -32,8 +32,8 @@ namespace test {
 
 TEST(TimerTest, TestSetTimeout) {
   std::atomic<int> count(0);
-  SetTimeout(100, [&count]() { count++; });
-  auto timer = SetTimeout(100, [&count]() { count++; });
+  SetTimeout(100, [&count]() { count++; });               // NOLINT
+  auto timer = SetTimeout(100, [&count]() { count++; });  // NOLINT
   EventLoop::Default().Run();
   EXPECT_EQ(2, count);
 }
@@ -41,9 +41,9 @@ TEST(TimerTest, TestSetTimeout) {
 TEST(TimerTest, SetInterval) {
   std::atomic<int> count(0);
   std::shared_ptr<Timer> timer;
-  timer = SetInterval(10, [&count, &timer]() {
+  timer = SetInterval(10, [&count, &timer]() {  // NOLINT
     count++;
-    if (count == 10) {
+    if (count == 10) {  // NOLINT
       timer->Stop();
     }
   });
@@ -55,12 +55,12 @@ void TestOneTimeTimer(EventLoop* loop) {
   std::atomic<int> count(0);
   loop->CreateTimer({
       .callback = [&count]() { count++; },
-      .delay = 100,
+      .delay = 100,  // NOLINT
       .type = Timer::Type::ONE_TIME,
   });
   auto timer = loop->CreateTimer({
       .callback = [&count]() { count++; },
-      .delay = 100,
+      .delay = 100,  // NOLINT
       .type = Timer::Type::ONE_TIME,
   });
   loop->Run();
@@ -74,11 +74,11 @@ void TestRepeatedTimer(EventLoop* loop) {
       .callback =
           [&count, &timer]() {
             count++;
-            if (count == 10) {
+            if (count == 10) {  // NOLINT
               timer->Stop();
             }
           },
-      .delay = 10,
+      .delay = 10,  // NOLINT
       .type = Timer::Type::REPEATED,
   });
   loop->Run();

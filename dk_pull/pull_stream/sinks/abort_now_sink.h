@@ -16,27 +16,28 @@
 
 #pragma once
 
+#include "dk_pull/types/end_or_error.h"
+#include "dk_pull/types/sink.h"
 #include "dk_pull/types/source.h"
 
 namespace dk_pull {
-namespace types {  //
+namespace pull_stream {
+namespace sinks {
 
-template <typename In, typename Out>
-using Through = std::function<Source<Out>(const Source<In>&)>;
-
-template <typename In, typename Out>
-class ThroughContext {
+template <typename T>
+class AbortNowSink final {
  public:
-  virtual dk_pull::types::Through<In, Out> Through() = 0;
-
-  virtual ~ThroughContext() = default;
-
- protected:
-  ThroughContext() = default;
+  static dk_pull::types::Sink<T> Make(
+      const dk_pull::types::SourceCallback<T>& cb) {
+    using dk_pull::types::Abort;
+    using dk_pull::types::Source;
+    return [cb](const Source<T>& source) { source(Abort::TRUE, cb); };
+  }
 
  private:
-  DK_DECLARE_UNCOPYABLE(ThroughContext);
+  AbortNowSink() = default;
 };
 
-}  // namespace types
+}  // namespace sinks
+}  // namespace pull_stream
 }  // namespace dk_pull

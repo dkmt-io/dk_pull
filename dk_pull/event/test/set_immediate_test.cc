@@ -70,7 +70,7 @@ TEST(SetImmediateTest, SubmitFromMultipleThreads) {
       counter.fetch_add(1);
     });
   };
-  std::array<std::unique_ptr<std::thread>, 1024> threads;
+  std::array<std::unique_ptr<std::thread>, 1024> threads;  // NOLINT
   for (auto& thread : threads) {
     thread.reset(new std::thread(task));
   }
@@ -86,7 +86,7 @@ TEST(SetImmediateTest, SubmitFromTask) {
   std::function<void()> task;
   task = [&]() {
     int c = counter.fetch_add(1);
-    if (c == 1023) {
+    if (c == 1023) {  // NOLINT
       return;
     }
     SetImmediate(task);

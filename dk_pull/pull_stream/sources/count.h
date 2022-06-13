@@ -16,27 +16,35 @@
 
 #pragma once
 
+#include <cstdint>
+#include <memory>
+
+#include "dk_pull/common/uncopyable.h"
 #include "dk_pull/types/source.h"
 
 namespace dk_pull {
-namespace types {  //
+namespace pull_stream {
+namespace sources {
 
-template <typename In, typename Out>
-using Through = std::function<Source<Out>(const Source<In>&)>;
-
-template <typename In, typename Out>
-class ThroughContext {
+class Count final : public dk_pull::types::SourceContext<uint64_t>,
+                    public std::enable_shared_from_this<Count> {
  public:
-  virtual dk_pull::types::Through<In, Out> Through() = 0;
+  static std::shared_ptr<Count> Create(uint64_t max);
 
-  virtual ~ThroughContext() = default;
+  dk_pull::types::Source<uint64_t> Source() override;
 
- protected:
-  ThroughContext() = default;
+  virtual ~Count() = default;
 
  private:
-  DK_DECLARE_UNCOPYABLE(ThroughContext);
+  explicit Count(uint64_t m);
+
+  uint64_t i = 0;
+
+  const uint64_t maximum;
+
+  DK_DECLARE_UNCOPYABLE(Count);
 };
 
-}  // namespace types
+}  // namespace sources
+}  // namespace pull_stream
 }  // namespace dk_pull

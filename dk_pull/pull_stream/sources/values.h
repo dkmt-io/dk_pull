@@ -29,13 +29,22 @@ namespace pull_stream {
 namespace sources {
 
 template <typename T>
-class Values final : public std::enable_shared_from_this<Values<T>> {
+class Values final : public dk_pull::types::SourceContext<T>,
+                     public std::enable_shared_from_this<Values<T>> {
  public:
-  static dk_pull::types::Source<T> Create(std::vector<T>&& values) {
+  static std::shared_ptr<Values> Create(std::vector<T>&& values) {
     auto self = std::shared_ptr<Values>(new Values(std::move(values)));
+    return self;
+  }
+
+  dk_pull::types::Source<T> Source() override {
+    auto self = this->shared_from_this();
     return [self](const dk_pull::types::Abort& abort,
-                  const dk_pull::types::SourceCallback<T>& cb) {
+                  dk_pull::types::SourceCallback<T> cb) {
       using dk_pull::types::Done;
+      if (cb == nullptr) {
+        cb = [](auto /*unused*/, auto /*unused*/) {};
+      }
       if (abort) {
         cb(abort, T());
         return;

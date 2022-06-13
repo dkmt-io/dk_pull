@@ -25,7 +25,8 @@ TEST(ValuesTest, BasicTest) {
   using dk_pull::pull_stream::sources::Values;
   using dk_pull::types::Abort;
   using dk_pull::types::Done;
-  auto source = Values<int>::Create({1, 2, 3});
+  auto values = Values<int>::Create({1, 2, 3});
+  auto source = values->Source();
   bool callbackInvoked = false;
   source(Abort::FALSE, [&callbackInvoked](const Done& done, int&& v) {
     callbackInvoked = true;

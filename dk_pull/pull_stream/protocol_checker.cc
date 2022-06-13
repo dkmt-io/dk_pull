@@ -14,29 +14,4 @@
  * limitations under the License.
  ******************************************************************************/
 
-#pragma once
-
-#include "dk_pull/types/source.h"
-
-namespace dk_pull {
-namespace types {  //
-
-template <typename In, typename Out>
-using Through = std::function<Source<Out>(const Source<In>&)>;
-
-template <typename In, typename Out>
-class ThroughContext {
- public:
-  virtual dk_pull::types::Through<In, Out> Through() = 0;
-
-  virtual ~ThroughContext() = default;
-
- protected:
-  ThroughContext() = default;
-
- private:
-  DK_DECLARE_UNCOPYABLE(ThroughContext);
-};
-
-}  // namespace types
-}  // namespace dk_pull
+#include "dk_pull/pull_stream/protocol_checker.h"

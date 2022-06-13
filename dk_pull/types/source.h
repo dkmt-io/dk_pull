@@ -18,6 +18,7 @@
 
 #include <functional>
 
+#include "dk_pull/common/uncopyable.h"
 #include "dk_pull/types/end_or_error.h"
 
 namespace dk_pull {
@@ -28,6 +29,20 @@ using SourceCallback = std::function<void(const Done&, T&&)>;
 
 template <typename T>
 using Source = std::function<void(const Abort&, const SourceCallback<T>&)>;
+
+template <typename T>
+class SourceContext {
+ public:
+  virtual dk_pull::types::Source<T> Source() = 0;
+
+  virtual ~SourceContext() = default;
+
+ protected:
+  SourceContext() = default;
+
+ private:
+  DK_DECLARE_UNCOPYABLE(SourceContext);
+};
 
 }  // namespace types
 }  // namespace dk_pull
