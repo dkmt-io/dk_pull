@@ -10,11 +10,15 @@ cc_library(
     name = "sinks",
     srcs = [
         "abort_now_sink.cc",
+        "collect.cc",
         "drain.cc",
+        "reduce.cc",
     ],
     hdrs = [
         "abort_now_sink.h",
+        "collect.h",
         "drain.h",
+        "reduce.h",
     ],
     deps = [
         "//dk_pull/common",

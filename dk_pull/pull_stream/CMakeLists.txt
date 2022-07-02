@@ -3,10 +3,16 @@ cmake_minimum_required(VERSION 3.10)
 add_library(dk_pull_pull_stream
   sinks/abort_now_sink.cc
   sinks/abort_now_sink.h
+  sinks/collect.cc
+  sinks/collect.h
   sinks/drain.cc
   sinks/drain.h
+  sinks/reduce.cc
+  sinks/reduce.h
   sources/count.cc
   sources/count.h
+  sources/empty.cc
+  sources/empty.h
   sources/values.cc
   sources/values.h
   protocol_checker.cc
@@ -26,6 +32,7 @@ target_link_libraries(dk_pull_pull_stream
 )
 
 add_executable(pull_stream_test
+  test/collect_test.cc
   test/drain_test.cc
   test/protocol_checker_test.cc
   test/values_test.cc

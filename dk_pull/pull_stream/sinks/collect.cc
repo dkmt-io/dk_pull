@@ -14,29 +14,4 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/types/end_or_error.h"
-
-#include <string>
-
-namespace dk_pull {
-namespace types {
-
-EndOrError::EndOrError(bool end) : isEnd(end), isError(false) {}
-
-EndOrError::EndOrError(const char* message)
-    : isEnd(false), isError(true), errorMessage(message) {}
-
-bool EndOrError::IsEnd() const { return isEnd; }
-
-bool EndOrError::IsError() const { return isError; }
-
-EndOrError::operator bool() const { return isEnd || isError; }
-
-const std::string& EndOrError::GetErrorMessage() const { return errorMessage; }
-
-const EndOrError EndOrError::TRUE(true);
-
-const EndOrError EndOrError::FALSE(false);
-
-}  // namespace types
-}  // namespace dk_pull
+#include "dk_pull/pull_stream/sinks/collect.h"

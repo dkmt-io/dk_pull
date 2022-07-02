@@ -14,29 +14,28 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/types/end_or_error.h"
+#pragma once
 
-#include <string>
+#include <cstdint>
+#include <memory>
+
+#include "dk_pull/types/end_or_error.h"
+#include "dk_pull/types/source.h"
 
 namespace dk_pull {
-namespace types {
+namespace pull_stream {
+namespace sources {
 
-EndOrError::EndOrError(bool end) : isEnd(end), isError(false) {}
+template <typename T>
+dk_pull::types::Source<T> MakeEmpty() {
+  using dk_pull::types::Abort;
+  using dk_pull::types::Done;
+  using dk_pull::types::SourceCallback;
+  return [](const Abort& /*abort*/, const SourceCallback<T>& cb) {
+    cb(Done::TRUE, T());
+  };
+}
 
-EndOrError::EndOrError(const char* message)
-    : isEnd(false), isError(true), errorMessage(message) {}
-
-bool EndOrError::IsEnd() const { return isEnd; }
-
-bool EndOrError::IsError() const { return isError; }
-
-EndOrError::operator bool() const { return isEnd || isError; }
-
-const std::string& EndOrError::GetErrorMessage() const { return errorMessage; }
-
-const EndOrError EndOrError::TRUE(true);
-
-const EndOrError EndOrError::FALSE(false);
-
-}  // namespace types
+}  // namespace sources
+}  // namespace pull_stream
 }  // namespace dk_pull

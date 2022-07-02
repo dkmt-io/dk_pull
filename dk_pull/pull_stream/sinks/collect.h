@@ -14,29 +14,33 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/types/end_or_error.h"
+#pragma once
 
-#include <string>
+#include <list>
+#include <utility>
+#include <vector>
+
+#include "dk_pull/pull_stream/sinks/reduce.h"
+#include "dk_pull/types/sink.h"
 
 namespace dk_pull {
-namespace types {
+namespace pull_stream {
+namespace sinks {
 
-EndOrError::EndOrError(bool end) : isEnd(end), isError(false) {}
+template <typename T>
+dk_pull::types::Sink<T> MakeCollect(
+    const typename Reduce<std::vector<T>, T>::Callback& cb) {
+  auto reduce = Reduce<std::vector<T>, T>::Create(
+      [](std::vector<T>&& vector, T&& v) {
+        vector.push_back(std::move(v));
+        return std::move(vector);
+      },
+      cb);
+  return [reduce](const dk_pull::types::Source<T>& source) {
+    return reduce->Sink()(source);
+  };
+}
 
-EndOrError::EndOrError(const char* message)
-    : isEnd(false), isError(true), errorMessage(message) {}
-
-bool EndOrError::IsEnd() const { return isEnd; }
-
-bool EndOrError::IsError() const { return isError; }
-
-EndOrError::operator bool() const { return isEnd || isError; }
-
-const std::string& EndOrError::GetErrorMessage() const { return errorMessage; }
-
-const EndOrError EndOrError::TRUE(true);
-
-const EndOrError EndOrError::FALSE(false);
-
-}  // namespace types
+}  // namespace sinks
+}  // namespace pull_stream
 }  // namespace dk_pull
