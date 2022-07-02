@@ -29,7 +29,7 @@ class EndOrError final {
 
   explicit EndOrError(bool end = false);
 
-  explicit EndOrError(const std::string& message);
+  explicit EndOrError(const char* message);
 
   bool IsEnd() const;
 

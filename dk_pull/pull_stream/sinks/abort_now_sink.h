@@ -25,18 +25,12 @@ namespace pull_stream {
 namespace sinks {
 
 template <typename T>
-class AbortNowSink final {
- public:
-  static dk_pull::types::Sink<T> Make(
-      const dk_pull::types::SourceCallback<T>& cb) {
-    using dk_pull::types::Abort;
-    using dk_pull::types::Source;
-    return [cb](const Source<T>& source) { source(Abort::TRUE, cb); };
-  }
-
- private:
-  AbortNowSink() = default;
-};
+dk_pull::types::Sink<T> MakeAbortNowSink(
+    const dk_pull::types::SourceCallback<T>& cb) {
+  using dk_pull::types::Abort;
+  using dk_pull::types::Source;
+  return [cb](const Source<T>& source) { source(Abort::TRUE, cb); };
+}
 
 }  // namespace sinks
 }  // namespace pull_stream

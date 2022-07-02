@@ -10,10 +10,12 @@ cc_library(
     name = "sources",
     srcs = [
         "count.cc",
+        "empty.cc",
         "values.cc",
     ],
     hdrs = [
         "count.h",
+        "empty.h",
         "values.h",
     ],
     deps = [

@@ -9,6 +9,7 @@ package(
 cc_test(
     name = "pull_stream_test",
     srcs = [
+        "collect_test.cc",
         "drain_test.cc",
         "protocol_checker_test.cc",
         "values_test.cc",

@@ -23,6 +23,7 @@
 
 #include "dk_pull/common/uncopyable.h"
 #include "dk_pull/types/source.h"
+#include "glog/logging.h"
 
 namespace dk_pull {
 namespace pull_stream {
