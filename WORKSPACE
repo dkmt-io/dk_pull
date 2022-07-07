@@ -49,6 +49,11 @@ local_repository(
     path = "third_party/libuv-1.40.0",
 )
 
+local_repository(
+    name = "zeromq-4.3.4",
+    path = "third_party/zeromq-4.3.4",
+)
+
 load("@com_google_protobuf//:protobuf_deps.bzl", "protobuf_deps")
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
