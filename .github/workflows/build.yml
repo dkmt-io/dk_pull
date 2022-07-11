@@ -2,9 +2,9 @@ name: build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   clang-tidy:
@@ -12,60 +12,51 @@ jobs:
     container:
       image: darkmatterstudio/dk_pull:latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Run clang-tidy
-      run: ./tools/clang_tidy.sh
+      - uses: actions/checkout@v3
+      - name: Run clang-tidy
+        run: ./tools/clang_tidy.sh
 
   cpplint:
     runs-on: ubuntu-latest
     container:
       image: darkmatterstudio/dk_pull:latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Run cpplint
-      run: ./tools/cpplint.sh
-
-  cmake-build:
-    runs-on: ubuntu-latest
-    container:
-      image: darkmatterstudio/dk_pull:latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: CMake Build
-      run: ./tools/cmake_ci_build.sh
+      - uses: actions/checkout@v3
+      - name: Run cpplint
+        run: ./tools/cpplint.sh
 
   bazel-build:
     runs-on: ubuntu-latest
     container:
       image: darkmatterstudio/dk_pull:latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Bazel Test
-      run: bazel test --runs_per_test 5 //...
+      - uses: actions/checkout@v3
+      - name: Bazel Test
+        run: bazel test --runs_per_test 5 //...
 
   bazel-build-asan:
     runs-on: ubuntu-latest
     container:
       image: darkmatterstudio/dk_pull:latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Bazel Test (ASAN)
-      run: bazel test --config asan --runs_per_test 5 //...
+      - uses: actions/checkout@v3
+      - name: Bazel Test (ASAN)
+        run: bazel test --config asan --runs_per_test 5 //...
 
   bazel-build-tsan:
     runs-on: ubuntu-latest
     container:
       image: darkmatterstudio/dk_pull:latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Bazel Test (TSAN)
-      run: bazel test --config tsan --runs_per_test 5 //...
+      - uses: actions/checkout@v3
+      - name: Bazel Test (TSAN)
+        run: bazel test --config tsan --runs_per_test 5 //...
 
   bazel-build-ubsan:
     runs-on: ubuntu-latest
     container:
       image: darkmatterstudio/dk_pull:latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Bazel Test (UBSAN)
-      run: bazel test --config ubsan --runs_per_test 5 //...
+      - uses: actions/checkout@v3
+      - name: Bazel Test (UBSAN)
+        run: bazel test --config ubsan --runs_per_test 5 //...
