@@ -10,10 +10,12 @@ cc_library(
     name = "common",
     srcs = [
         "finally.cc",
+        "split_string.cc",
         "uncopyable.cc",
     ],
     hdrs = [
         "finally.h",
+        "split_string.h",
         "uncopyable.h",
     ],
     deps = [
