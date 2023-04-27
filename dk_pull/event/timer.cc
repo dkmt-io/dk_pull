@@ -51,7 +51,7 @@ bool Timer::start() {
   CHECK(!stopped) << "Timer already stopped";
   CHECK(!uv_is_closing(&uvHandle.handle)) << "Timer is closing";
   started = true;
-  uint64_t repeat = type == Type::REPEATED ? 1 : 0;
+  uint64_t repeat = type == Type::REPEATED ? delay : 0;
   int rc = uv_timer_start(&uvHandle.timer, uvTimerCallback, delay, repeat);
   if (rc != 0) {
     LOG(ERROR) << "uv_timer_start() failed: " << uv_strerror(rc);
