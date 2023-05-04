@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2022 Huahang Liu
+ * Copyright (C) 2023 Huahang Liu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,18 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/event/set_immediate.h"
+#pragma once
 
-#include <functional>
-#include <memory>
-
-#include "dk_pull/event/event_loop.h"
+#include <cstdint>
 
 namespace dk_pull {
 namespace event {
 
-void SetImmediate(const std::function<void()>& cb) {
-  using dk_pull::event::EventLoop;
-  EventLoop::Default().SubmitTask(cb);
-}
+enum class EventProvider : uint8_t {
+  LIBUV = 1,
+  LIBEVENT = 2,
+  ASIO = 3,
+};
 
 }  // namespace event
 }  // namespace dk_pull

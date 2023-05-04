@@ -14,25 +14,15 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/event/set_interval.h"
-
-#include <cstdint>
-#include <memory>
-
-#include "dk_pull/event/event_loop.h"
+#include "dk_pull/event/timer/timer.h"
 
 namespace dk_pull {
 namespace event {
+namespace timer {
 
-std::shared_ptr<Timer> SetInterval(uint64_t ms, const Timer::Callback& cb) {
-  using dk_pull::event::EventLoop;
-  auto timer = EventLoop::Default().CreateTimer({
-      .callback = cb,
-      .delay = ms,
-      .type = Timer::Type::REPEATED,
-  });
-  return timer;
-}
+Timer::Timer(const Options& options)
+    : callback(options.callback), delay(options.delay), type(options.type) {}
 
+}  // namespace timer
 }  // namespace event
 }  // namespace dk_pull

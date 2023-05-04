@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2022 Huahang Liu
+ * Copyright (C) 2023 Huahang Liu
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,4 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/event/set_timeout.h"
-
-#include <cstdint>
-#include <memory>
-
-#include "dk_pull/event/event_loop.h"
-
-namespace dk_pull {
-namespace event {
-
-std::shared_ptr<Timer> SetTimeout(uint64_t ms, const Timer::Callback& cb) {
-  using dk_pull::event::EventLoop;
-  auto timer = EventLoop::Default().CreateTimer({
-      .callback = cb,
-      .delay = ms,
-      .type = Timer::Type::ONE_TIME,
-  });
-  return timer;
-}
-
-}  // namespace event
-}  // namespace dk_pull
+#include "dk_pull/event/event_provider.h"

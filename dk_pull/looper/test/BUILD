@@ -10,7 +10,7 @@ cc_test(
     name = "looper_test",
     srcs = ["looper_test.cc"],
     deps = [
-        "//dk_pull/event",
+        "//dk_pull/event/event_loop",
         "//dk_pull/looper",
         "//third_party/gtest",
         "//third_party/gtest:gtest_main",

@@ -18,8 +18,7 @@
 
 #include <random>
 
-#include "dk_pull/event/event_loop.h"
-#include "dk_pull/event/set_immediate.h"
+#include "dk_pull/event/event_loop/event_loop.h"
 #include "gtest/gtest.h"
 
 TEST(LooperTest, SyncTest) {
@@ -37,37 +36,47 @@ TEST(LooperTest, SyncTest) {
 }
 
 TEST(LooperTest, AsyncTest) {
-  using dk_pull::event::EventLoop;
-  using dk_pull::event::SetImmediate;
+  using dk_pull::event::EventProvider;
+  using dk_pull::event::event_loop::EventLoop;
   using dk_pull::looper::Looper;
+  auto event_loop = EventLoop::Create(EventProvider::LIBUV);
+  EXPECT_NE(nullptr, event_loop);
   constexpr int N = 100000;
   int c = 0;
-  auto looper = Looper::Create([&c](const std::function<void()>& next) {
-    c++;
-    if (c < N) {
-      SetImmediate([next]() { next(); });
-    }
-  });
+  auto looper =
+      Looper::Create([&c, &event_loop](const std::function<void()>& next) {
+        c++;
+        if (c < N) {
+          event_loop->SetTimeout(0, [next]() { next(); });
+        }
+      });
   looper->Start();
-  EventLoop::Default().Run();
+  event_loop->Run();
   EXPECT_EQ(N, c);
 }
 
 TEST(LooperTest, RandomTest) {
-  using dk_pull::event::EventLoop;
-  using dk_pull::event::SetImmediate;
+  using dk_pull::event::EventProvider;
+  using dk_pull::event::event_loop::EventLoop;
   using dk_pull::looper::Looper;
+  auto event_loop = EventLoop::Create(EventProvider::LIBUV);
+  EXPECT_NE(nullptr, event_loop);
   constexpr int N = 100000;
   int c = 0;
-  auto looper = Looper::Create([&c](const std::function<void()>& next) {
-    c++;
-    if (c < N) {
-      std::random_device rd;
-      static thread_local std::mt19937 mt(rd());
-      mt() % 2 == 0 ? SetImmediate(next) : next();
-    }
-  });
+  auto looper =
+      Looper::Create([&c, &event_loop](const std::function<void()>& next) {
+        c++;
+        if (c < N) {
+          std::random_device rd;
+          static thread_local std::mt19937 mt(rd());
+          if (mt() % 2 == 0) {
+            next();
+            return;
+          }
+          event_loop->SetTimeout(0, next);
+        }
+      });
   looper->Start();
-  EventLoop::Default().Run();
+  event_loop->Run();
   EXPECT_EQ(N, c);
 }

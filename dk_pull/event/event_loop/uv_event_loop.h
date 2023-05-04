@@ -16,15 +16,40 @@
 
 #pragma once
 
-#include <cstdint>
-#include <memory>
+#include <uv.h>
 
-#include "dk_pull/event/timer.h"
+#include <atomic>
+#include <cstdint>
+#include <functional>
+#include <list>
+#include <memory>
+#include <mutex>
+
+#include "dk_pull/common/uncopyable.h"
+#include "dk_pull/event/event_loop/event_loop.h"
 
 namespace dk_pull {
 namespace event {
+namespace event_loop {
 
-std::shared_ptr<Timer> SetInterval(uint64_t ms, const Timer::Callback& cb);
+class UvEventLoop final : public EventLoop {
+ public:
+  using Timer = dk_pull::event::timer::Timer;
 
+  UvEventLoop();
+
+  virtual ~UvEventLoop();
+
+  void Run() override;
+
+  std::shared_ptr<Timer> CreateTimer(const Timer::Options& options) override;
+
+ private:
+  uv_loop_t uvLoop;
+
+  DK_DECLARE_UNCOPYABLE(UvEventLoop);
+};
+
+}  // namespace event_loop
 }  // namespace event
 }  // namespace dk_pull

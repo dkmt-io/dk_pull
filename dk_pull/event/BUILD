@@ -7,24 +7,31 @@ package(
 )
 
 cc_library(
-    name = "event",
-    srcs = [
-        "event_loop.cc",
-        "set_immediate.cc",
-        "set_interval.cc",
-        "set_timeout.cc",
-        "timer.cc",
-    ],
-    hdrs = [
-        "event_loop.h",
-        "set_immediate.h",
-        "set_interval.h",
-        "set_timeout.h",
-        "timer.h",
-    ],
-    deps = [
-        "//dk_pull/common",
-        "//third_party/glog",
-        "//third_party/libuv",
-    ],
+    name = "event_provider",
+    srcs = ["event_provider.cc"],
+    hdrs = ["event_provider.h"],
 )
+
+# cc_library(
+#     name = "event",
+#     srcs = [
+#         "event_loop.cc",
+#         "set_immediate.cc",
+#         "set_interval.cc",
+#         "set_timeout.cc",
+#         "timer.cc",
+#     ],
+#     hdrs = [
+#         "event_loop.h",
+#         "set_immediate.h",
+#         "set_interval.h",
+#         "set_timeout.h",
+#         "timer.h",
+#     ],
+#     deps = [
+#         "//dk_pull/common",
+#         "//third_party/glog",
+#         "//third_party/libuv",
+#         "@boost//:asio",
+#     ],
+# )

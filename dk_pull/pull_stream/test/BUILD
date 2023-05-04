@@ -15,7 +15,7 @@ cc_test(
         "values_test.cc",
     ],
     deps = [
-        "//dk_pull/event",
+        "//dk_pull/event/event_loop",
         "//dk_pull/pull_stream",
         "//third_party/gtest",
         "//third_party/gtest:gtest_main",

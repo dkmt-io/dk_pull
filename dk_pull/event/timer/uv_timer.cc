@@ -14,22 +14,17 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/event/timer.h"
+#include "dk_pull/event/timer/uv_timer.h"
 
 #include <glog/logging.h>
 
 #include <memory>
 
-#include "dk_pull/event/event_loop.h"
-
 namespace dk_pull {
 namespace event {
+namespace timer {
 
-Timer::Timer(const Options& options, uv_loop_t* uvLoop)
-    : callback(options.callback),
-      delay(options.delay),
-      type(options.type),
-      uvHandle() {
+UvTimer::UvTimer(const Options& options, uv_loop_t* uvLoop) : Timer(options) {
   CHECK_NOTNULL(callback);
   CHECK_NOTNULL(uvLoop);
   int rc = uv_timer_init(uvLoop, &uvHandle.timer);
@@ -37,21 +32,21 @@ Timer::Timer(const Options& options, uv_loop_t* uvLoop)
   CHECK_EQ(rc, 0) << "uv_timer_init() failed: " << uv_strerror(rc);
 }
 
-Timer::~Timer() = default;
+UvTimer::~UvTimer() = default;
 
-std::shared_ptr<Timer> Timer::Create(const Options& options,
-                                     uv_loop_t* uvLoop) {
-  std::shared_ptr<Timer> timer(new Timer(options, uvLoop));
+std::shared_ptr<UvTimer> UvTimer::Create(const Options& options,
+                                         uv_loop_t* uvLoop) {
+  std::shared_ptr<UvTimer> timer(new UvTimer(options, uvLoop));
   timer->start();
   return timer;
 }
 
-bool Timer::start() {
+bool UvTimer::start() {
   CHECK(!started) << "Timer already started";
   CHECK(!stopped) << "Timer already stopped";
   CHECK(!uv_is_closing(&uvHandle.handle)) << "Timer is closing";
   started = true;
-  uint64_t repeat = type == Type::REPEATED ? delay : 0;
+  uint64_t repeat = type == Type::REPEATED ? 1 : 0;
   int rc = uv_timer_start(&uvHandle.timer, uvTimerCallback, delay, repeat);
   if (rc != 0) {
     LOG(ERROR) << "uv_timer_start() failed: " << uv_strerror(rc);
@@ -60,9 +55,7 @@ bool Timer::start() {
   return rc == 0;
 }
 
-void Timer::SetCallback(const Callback& cb) { callback = cb; }
-
-bool Timer::Stop() {
+bool UvTimer::Stop() {
   CHECK(started) << "Timer not started";
   CHECK(!stopped) << "Timer already stopped";
   stopped = true;
@@ -74,28 +67,29 @@ bool Timer::Stop() {
   return rc == 0;
 }
 
-void Timer::close() {
+void UvTimer::close() {
   if (closed || (uv_is_closing(&uvHandle.handle) != 0)) {
     return;
   }
   uv_close(&uvHandle.handle, started ? uvCloseCallback : nullptr);
 }
 
-void Timer::uvCloseCallback(uv_handle_t* handle) {
-  auto* timer = static_cast<Timer*>(handle->data);
+void UvTimer::uvCloseCallback(uv_handle_t* handle) {
+  auto* timer = static_cast<UvTimer*>(handle->data);
   timer->closed = true;
   timer->self = nullptr;
 }
 
-void Timer::uvTimerCallback(uv_timer_t* uvTimer) {
+void UvTimer::uvTimerCallback(uv_timer_t* uvTimer) {
   CHECK_NOTNULL(uvTimer);
-  auto* timer = static_cast<Timer*>(uvTimer->data);
+  auto* timer = static_cast<UvTimer*>(uvTimer->data);
   CHECK_NOTNULL(timer);
   timer->callback();
-  if (timer->type == Type::ONE_TIME) {
+  if (timer->type == Timer::Type::ONE_TIME) {
     timer->close();
   }
 }
 
+}  // namespace timer
 }  // namespace event
 }  // namespace dk_pull

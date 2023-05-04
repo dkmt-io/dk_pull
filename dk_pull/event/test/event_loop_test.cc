@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/event/event_loop.h"
+#include "dk_pull/event/event_loop/event_loop.h"
 
 #include <gtest/gtest.h>
 
@@ -22,15 +22,12 @@ namespace dk_pull {
 namespace event {
 namespace test {
 
-TEST(EventLoopTest, BasicTest) {
-  using dk_pull::event::EventLoop;
-  EventLoop loop;
-  loop.Run();
-}
-
-TEST(EventLoopTest, DefaultLoopTest) {
-  using dk_pull::event::EventLoop;
-  EventLoop::Default().Run();
+TEST(EventLoopTest, BasicTestLibUV) {
+  using dk_pull::event::EventProvider;
+  using dk_pull::event::event_loop::EventLoop;
+  auto loop = EventLoop::Create(EventProvider::LIBUV);
+  EXPECT_NE(nullptr, loop);
+  loop->Run();
 }
 
 }  // namespace test

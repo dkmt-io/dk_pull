@@ -14,41 +14,46 @@
  * limitations under the License.
  ******************************************************************************/
 
-#include "dk_pull/event/timer.h"
-
+#include <glog/logging.h>
 #include <gtest/gtest.h>
 #include <uv.h>
 
 #include <atomic>
 #include <thread>
 
-#include "dk_pull/event/event_loop.h"
-#include "dk_pull/event/set_interval.h"
-#include "dk_pull/event/set_timeout.h"
+#include "dk_pull/event/event_loop/event_loop.h"
 
 namespace dk_pull {
 namespace event {
 namespace test {
 
+using dk_pull::event::EventProvider;
+using dk_pull::event::event_loop::EventLoop;
+using dk_pull::event::timer::Timer;
+
 TEST(TimerTest, TestSetTimeout) {
+  auto loop = EventLoop::Create(EventProvider::LIBUV);
+  EXPECT_NE(nullptr, loop);
+  loop->Run();
   std::atomic<int> count(0);
-  SetTimeout(100, [&count]() { count++; });               // NOLINT
-  auto timer = SetTimeout(100, [&count]() { count++; });  // NOLINT
-  EventLoop::Default().Run();
+  loop->SetTimeout(100, [&count]() { count++; });               // NOLINT
+  auto timer = loop->SetTimeout(100, [&count]() { count++; });  // NOLINT
+  loop->Run();
   EXPECT_EQ(2, count);
 }
 
 TEST(TimerTest, SetInterval) {
   std::atomic<int> count(0);
+  auto loop = EventLoop::Create(EventProvider::LIBUV);
   std::shared_ptr<Timer> timer;
-  timer = SetInterval(10, [&count, &timer]() {  // NOLINT
-    count++;
-    if (count == 10) {  // NOLINT
+  timer = loop->SetInterval(1000, [&count, &timer]() {  // NOLINT
+    LOG(INFO) << count++;
+    if (count == 100) {  // NOLINT
       timer->Stop();
     }
   });
-  EventLoop::Default().Run();
-  EXPECT_EQ(10, count);
+  loop->Run();
+  EXPECT_EQ(100, count);
 }
 
 void TestOneTimeTimer(EventLoop* loop) {
@@ -87,14 +92,15 @@ void TestRepeatedTimer(EventLoop* loop) {
 
 TEST(TimerTest, MultiThreadedTest) {
   std::thread t1([]() {
-    EventLoop loop;
-    TestOneTimeTimer(&loop);
-    TestRepeatedTimer(&loop);
+    auto loop = EventLoop::Create(EventProvider::LIBUV);
+    EXPECT_NE(nullptr, loop);
+    TestOneTimeTimer(loop.get());
+    TestRepeatedTimer(loop.get());
   });
   std::thread t2([]() {
-    EventLoop loop;
-    TestRepeatedTimer(&loop);
-    TestOneTimeTimer(&loop);
+    auto loop = EventLoop::Create(EventProvider::LIBUV);
+    TestRepeatedTimer(loop.get());
+    TestOneTimeTimer(loop.get());
   });
   t1.join();
   t2.join();
