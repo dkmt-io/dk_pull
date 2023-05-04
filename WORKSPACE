@@ -44,6 +44,16 @@ git_repository(
     remote = "https://github.com/erenon/bazel_clang_tidy.git",
 )
 
+git_repository(
+    name = "com_github_nelhage_rules_boost",
+    commit = "7f54d74a4a9522de0aa41c20d7130d7ecccf4a85",
+    remote = "https://github.com/nelhage/rules_boost.git",
+)
+
+load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
+
+boost_deps()
+
 local_repository(
     name = "libuv-1.40.0",
     path = "third_party/libuv-1.40.0",

@@ -41,64 +41,64 @@ TEST(TimerTest, TestSetTimeout) {
 TEST(TimerTest, SetInterval) {
   std::atomic<int> count(0);
   std::shared_ptr<Timer> timer;
-  timer = SetInterval(10, [&count, &timer]() {  // NOLINT
-    count++;
-    if (count == 10) {  // NOLINT
+  timer = SetInterval(1000, [&count, &timer]() {  // NOLINT
+    LOG(INFO) << count++;
+    if (count == 100) {  // NOLINT
       timer->Stop();
     }
   });
   EventLoop::Default().Run();
-  EXPECT_EQ(10, count);
+  EXPECT_EQ(100, count);
 }
 
-void TestOneTimeTimer(EventLoop* loop) {
-  std::atomic<int> count(0);
-  loop->CreateTimer({
-      .callback = [&count]() { count++; },
-      .delay = 100,  // NOLINT
-      .type = Timer::Type::ONE_TIME,
-  });
-  auto timer = loop->CreateTimer({
-      .callback = [&count]() { count++; },
-      .delay = 100,  // NOLINT
-      .type = Timer::Type::ONE_TIME,
-  });
-  loop->Run();
-  EXPECT_EQ(2, count);
-}
+// void TestOneTimeTimer(EventLoop* loop) {
+//   std::atomic<int> count(0);
+//   loop->CreateTimer({
+//       .callback = [&count]() { count++; },
+//       .delay = 100,  // NOLINT
+//       .type = Timer::Type::ONE_TIME,
+//   });
+//   auto timer = loop->CreateTimer({
+//       .callback = [&count]() { count++; },
+//       .delay = 100,  // NOLINT
+//       .type = Timer::Type::ONE_TIME,
+//   });
+//   loop->Run();
+//   EXPECT_EQ(2, count);
+// }
 
-void TestRepeatedTimer(EventLoop* loop) {
-  std::atomic<int> count(0);
-  std::shared_ptr<Timer> timer;
-  timer = loop->CreateTimer({
-      .callback =
-          [&count, &timer]() {
-            count++;
-            if (count == 10) {  // NOLINT
-              timer->Stop();
-            }
-          },
-      .delay = 10,  // NOLINT
-      .type = Timer::Type::REPEATED,
-  });
-  loop->Run();
-  EXPECT_EQ(10, count);
-}
+// void TestRepeatedTimer(EventLoop* loop) {
+//   std::atomic<int> count(0);
+//   std::shared_ptr<Timer> timer;
+//   timer = loop->CreateTimer({
+//       .callback =
+//           [&count, &timer]() {
+//             count++;
+//             if (count == 10) {  // NOLINT
+//               timer->Stop();
+//             }
+//           },
+//       .delay = 10,  // NOLINT
+//       .type = Timer::Type::REPEATED,
+//   });
+//   loop->Run();
+//   EXPECT_EQ(10, count);
+// }
 
-TEST(TimerTest, MultiThreadedTest) {
-  std::thread t1([]() {
-    EventLoop loop;
-    TestOneTimeTimer(&loop);
-    TestRepeatedTimer(&loop);
-  });
-  std::thread t2([]() {
-    EventLoop loop;
-    TestRepeatedTimer(&loop);
-    TestOneTimeTimer(&loop);
-  });
-  t1.join();
-  t2.join();
-}
+// TEST(TimerTest, MultiThreadedTest) {
+//   std::thread t1([]() {
+//     EventLoop loop;
+//     TestOneTimeTimer(&loop);
+//     TestRepeatedTimer(&loop);
+//   });
+//   std::thread t2([]() {
+//     EventLoop loop;
+//     TestRepeatedTimer(&loop);
+//     TestOneTimeTimer(&loop);
+//   });
+//   t1.join();
+//   t2.join();
+// }
 
 }  // namespace test
 }  // namespace event

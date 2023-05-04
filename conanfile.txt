@@ -1,8 +1,0 @@
-[requires]
-gflags/2.2.2
-glog/0.6.0
-gtest/1.11.0
-libuv/1.44.1
-
-[generators]
-cmake

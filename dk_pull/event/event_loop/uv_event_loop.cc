@@ -14,54 +14,42 @@
  * limitations under the License.
  ******************************************************************************/
 
-#pragma once
+#include "dk_pull/event/event_loop/uv_event_loop.h"
 
-#include <uv.h>
+#include <glog/logging.h>
 
-#include <atomic>
-#include <cstdint>
-#include <functional>
-#include <list>
-#include <memory>
 #include <mutex>
+#include <thread>
 
-#include "dk_pull/common/uncopyable.h"
-#include "dk_pull/event/timer.h"
+#include "dk_pull/event/timer/uv_timer.h"
 
 namespace dk_pull {
 namespace event {
+namespace event_loop {
 
-class EventLoop final {
- public:
-  using Task = std::function<void()>;
+UvEventLoop::UvEventLoop() : EventLoop(){
+  int rc = uv_loop_init(&uvLoop);
+  CHECK_EQ(rc, 0) << "uv_loop_init() failed: " << uv_strerror(rc);
+}
 
-  EventLoop();
+UvEventLoop::~UvEventLoop() {
+  int rc = uv_loop_close(&uvLoop);
+  CHECK_EQ(rc, 0) << "uv_loop_close() failed: " << uv_strerror(rc);
+}
 
-  void Run();
+void UvEventLoop::Run() {
+  while (uv_loop_alive(&uvLoop) != 0) {
+    uv_run(&uvLoop, UV_RUN_ONCE);
+  }
+}
 
-  std::shared_ptr<Timer> CreateTimer(const Timer::Options& options);
+std::shared_ptr<::dk_pull::event::timer::Timer> UvEventLoop::CreateTimer(
+    const Timer::Options& options) {
+  using dk_pull::event::timer::UvTimer;
+  auto timer = UvTimer::Create(options, &uvLoop);
+  return std::dynamic_pointer_cast<Timer>(timer);
+}
 
-  void SubmitTask(const Task& task);
-
-  ~EventLoop();
-
-  static EventLoop& Default();
-
- private:
-  static void uvAsyncCloseCallback(uv_handle_t* /*uvHandle*/);
-
-  void processTasks();
-
-  bool hasTask();
-
-  uv_loop_t uvLoop;
-  uv_any_handle uvAsync;
-  std::atomic<bool> uvAsyncClosed;
-  std::list<Task> taskQueue;
-  std::mutex taskQueueMutex;
-
-  DK_DECLARE_UNCOPYABLE(EventLoop);
-};
-
+}  // namespace event_loop
 }  // namespace event
 }  // namespace dk_pull

@@ -14,17 +14,28 @@
  * limitations under the License.
  ******************************************************************************/
 
-#pragma once
+#include "dk_pull/event/event_loop/event_loop.h"
 
-#include <cstdint>
-#include <memory>
+#include <glog/logging.h>
 
-#include "dk_pull/event/timer.h"
+#include "dk_pull/event/event_loop/uv_event_loop.h"
 
 namespace dk_pull {
 namespace event {
+namespace event_loop {
 
-std::shared_ptr<Timer> SetTimeout(uint64_t ms, const Timer::Callback& cb);
+std::unique_ptr<EventLoop> EventLoop::Create(const EventProvider& provider) {
+  switch (provider) {
+    case EventProvider::LIBUV: {
+      return std::make_unique<UvEventLoop>();
+    }
+    default: {
+      LOG(FATAL) << "Unknown provider: " << static_cast<int>(provider);
+    }
+  }
+  return nullptr;
+}
 
+}  // namespace event_loop
 }  // namespace event
 }  // namespace dk_pull

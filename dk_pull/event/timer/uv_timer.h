@@ -16,13 +16,54 @@
 
 #pragma once
 
+#include <glog/logging.h>
+#include <uv.h>
+
+#include <cstdint>
 #include <functional>
 #include <memory>
 
+#include "dk_pull/common/uncopyable.h"
+#include "dk_pull/event/timer/timer.h"
+
 namespace dk_pull {
 namespace event {
+namespace timer {
 
-void SetImmediate(const std::function<void()>& cb);
+class UvTimer final : public Timer,
+                      public std::enable_shared_from_this<UvTimer> {
+ public:
+  virtual ~UvTimer();
 
+  virtual bool Stop();
+
+  static std::shared_ptr<UvTimer> Create(const Options& options,
+                                         uv_loop_t* uvLoop);
+
+ private:
+  static void uvCloseCallback(uv_handle_t* handle);
+
+  static void uvTimerCallback(uv_timer_t* timer);
+
+  UvTimer(const Options& options, uv_loop_t* uvLoop);
+
+  bool start();
+
+  void close();
+
+  uv_any_handle uvHandle;
+
+  std::shared_ptr<UvTimer> self;
+
+  bool started = false;
+
+  bool stopped = false;
+
+  bool closed = false;
+
+  DK_DECLARE_UNCOPYABLE(UvTimer);
+};
+
+}  // namespace timer
 }  // namespace event
 }  // namespace dk_pull

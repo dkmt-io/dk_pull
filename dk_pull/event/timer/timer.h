@@ -16,9 +16,6 @@
 
 #pragma once
 
-#include <glog/logging.h>
-#include <uv.h>
-
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -27,8 +24,9 @@
 
 namespace dk_pull {
 namespace event {
+namespace timer {
 
-class Timer final : public std::enable_shared_from_this<Timer> {
+class Timer {
  public:
   typedef std::function<void()> Callback;
 
@@ -43,25 +41,12 @@ class Timer final : public std::enable_shared_from_this<Timer> {
     Type type;
   };
 
-  static std::shared_ptr<Timer> Create(const Options& options,
-                                       uv_loop_t* uvLoop);
+  virtual ~Timer() = default;
 
-  virtual ~Timer();
+  virtual bool Stop() = 0;
 
-  void SetCallback(const Callback& cb);
-
-  bool Stop();
-
- private:
-  static void uvCloseCallback(uv_handle_t* handle);
-
-  static void uvTimerCallback(uv_timer_t* timer);
-
-  Timer(const Options& options, uv_loop_t* uvLoop);
-
-  bool start();
-
-  void close();
+ protected:
+  Timer(const Options& options);
 
   Callback callback;
 
@@ -69,18 +54,10 @@ class Timer final : public std::enable_shared_from_this<Timer> {
 
   Type type;
 
-  uv_any_handle uvHandle;
-
-  std::shared_ptr<Timer> self;
-
-  bool started = false;
-
-  bool stopped = false;
-
-  bool closed = false;
-
+ private:
   DK_DECLARE_UNCOPYABLE(Timer);
 };
 
+}  // namespace timer
 }  // namespace event
 }  // namespace dk_pull
